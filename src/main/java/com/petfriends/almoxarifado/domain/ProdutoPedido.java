@@ -10,7 +10,7 @@ import java.util.UUID;
 public record ProdutoPedido(
         @NonNull UUID produtoId,
         @NonNull Quantidade quantidade,
-        @NonNull LocalizacaoFisica localizacao
+        @NonNull Localizacao localizacao
 ) implements Serializable {
     public ProdutoPedido {
         if (quantidade.valor() <= 0) {

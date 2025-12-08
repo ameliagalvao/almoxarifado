@@ -37,7 +37,7 @@ public class PreparacaoPedido {
     private LocalDateTime dataCancelamento;
 
     @ElementCollection
-    @CollectionTable(name = "preparacao_produtos", joinColumns = @JoinColumn(name = "preparacao_id"))
+    @CollectionTable(name = "produtos_preparacao_pedido", joinColumns = @JoinColumn(name = "preparacao_id"))
     private List<ProdutoPedido> produtos;
 
     public PreparacaoPedido(UUID pedidoId, List<ProdutoPedido> produtos) {
@@ -46,6 +46,7 @@ public class PreparacaoPedido {
         this.status = StatusPreparacao.AGUARDANDO;
         this.produtos = produtos;
     }
+
 
     public void iniciarPreparacao() {
         if (status != StatusPreparacao.AGUARDANDO) {
