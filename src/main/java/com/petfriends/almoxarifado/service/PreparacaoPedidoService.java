@@ -1,11 +1,16 @@
 package com.petfriends.almoxarifado.service;
 
+import com.petfriends.almoxarifado.domain.Localizacao;
 import com.petfriends.almoxarifado.domain.PreparacaoPedido;
+import com.petfriends.almoxarifado.domain.ProdutoPedido;
+import com.petfriends.almoxarifado.domain.Quantidade;
 import com.petfriends.almoxarifado.repository.PreparacaoPedidoRepository;
 import com.petfriends.almoxarifado.event.PedidoAutorizadoParaPreparacaoEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,16 +20,15 @@ public class PreparacaoPedidoService {
 
     @Transactional
     public void processar(PedidoAutorizadoParaPreparacaoEvent event) {
-        // 1. Criar o agregado a partir do pedidoId e produtos do evento
-        PreparacaoPedido preparacao = new PreparacaoPedido(
-                event.pedidoId(),
-                event.produtos()
-        );
+        List<ProdutoPedido> produtos = event.produtos().stream()
+                .map(p -> new ProdutoPedido(
+                        p.produtoId(),
+                        new Quantidade(p.quantidade()),
+                        new Localizacao(p.localizacao().setor(), p.localizacao().prateleira(), p.localizacao().corredor())
+                )).toList();
 
-        // 2. Invocar a regra de negócio de mudança de estado
+        PreparacaoPedido preparacao = new PreparacaoPedido(event.pedidoId(), produtos);
         preparacao.iniciarPreparacao();
-
-        // 3. Persistir o novo agregado com status atualizado
         repository.save(preparacao);
     }
 }

@@ -10,15 +10,9 @@ import java.util.function.Consumer;
 @Configuration
 public class PedidoEventConsumerConfig {
 
-    private final PreparacaoPedidoService preparacaoPedidoService;
-
-    public PedidoEventConsumerConfig(PreparacaoPedidoService preparacaoPedidoService) {
-        this.preparacaoPedidoService = preparacaoPedidoService;
-    }
-
     @Bean
-    public Consumer<PedidoAutorizadoParaPreparacaoEvent> pedidoAutorizadoParaPreparacaoListener() {
-        return event -> preparacaoPedidoService.processar(event);
+    public Consumer<PedidoAutorizadoParaPreparacaoEvent> consumer(PreparacaoPedidoService service) {
+        return service::processar;
     }
 
 }
